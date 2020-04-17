@@ -1,0 +1,40 @@
+{
+   "name": "shop",
+   "version": "0.0.1",
+   "description": "Awesome project developed with TypeORM.",
+   "devDependencies": {
+      "@types/cors": "^2.8.6",
+      "@types/node": "^8.0.29",
+      "nodemon": "^2.0.2",
+      "ts-node": "^3.3.0",
+      "typescript": "3.3.3333"
+   },
+   "dependencies": {
+      "@types/koa": "^2.11.2",
+      "@types/koa-bodyparser": "^4.3.0",
+      "@types/koa-router": "^7.4.0",
+      "class-transformer": "^0.2.3",
+      "class-validator": "^0.10.1",
+      "co-busboy": "^1.4.0",
+      "cors": "^2.8.5",
+      "kcors": "^2.2.2",
+      "koa": "^2.11.0",
+      "koa-body": "^4.1.1",
+      "koa-bodyparser": "^4.2.1",
+      "koa-multer": "^1.0.2",
+      "koa-router": "^8.0.8",
+      "koa2-formidable": "^1.0.2",
+      "kors": "^1.0.0",
+      "multer": "^1.4.2",
+      "mysql": "^2.14.1",
+      "reflect-metadata": "^0.1.10",
+      "routing-controllers": "^0.8.1-alpha.2",
+      "safer-buffer": "^2.1.2",
+      "typeorm": "0.2.24",
+      "typeserializer": "^0.2.5",
+      "yarn": "^1.22.4"
+   },
+   "scripts": {
+      "start": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts"
+   }
+}
