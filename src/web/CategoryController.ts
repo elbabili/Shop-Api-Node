@@ -17,29 +17,51 @@ export class CategoryController {
 
   @Get("/categories/:id")          
   async Get(@Params() id:number){
-    const connection = await this.connection;
-    let categoryRepository = connection.getRepository(Category);
-    let category = await categoryRepository.findOne(id);    //ToDo : que se passe t il s'il n'est pas en base
-    return category;    
+    try {
+      const connection = await this.connection;
+      let categoryRepository = connection.getRepository(Category);
+      let category = await categoryRepository.findOne(id);
+      if(category)    return category;    
+      else return "category not in db";
+    }
+    catch(Error){
+      console.log(Error.message);
+      return Error.message;
+    }
   }
 
   @Get("/categories/:id/products")          
   async getProductsByCat(@Params() id:number){
-    const connection = await this.connection;
-    let products = await connection.createQueryBuilder()
-                  .relation(Category, "products")
-                  .of(id) 
-                  .loadMany();
-    return products;
+    try {
+      const connection = await this.connection;
+      let products = await connection.createQueryBuilder()
+                    .relation(Category, "products")
+                    .of(id) 
+                    .loadMany();
+      if(products)    return products;
+      else return "products of this category not in db";
+    }
+    catch(Error){
+      console.log(Error.message);
+      return Error.message;
+    }
   }
 
   @Get("/categories")
   async getAll(@Req() request: any, @Res() response: any) {
-    const connection = await this.connection;
-    let categoryRepository = connection.getRepository(Category);
-    return categoryRepository.find();
+    try {
+      const connection = await this.connection;
+      let categoryRepository = connection.getRepository(Category);
+      let categories = categoryRepository.find();
+      if(categories)  return categories;
+      else return "table of categories empty in db";
+    }
+    catch(Error){
+      console.log(Error.message);
+      return Error.message;
+    }
   }
-
+/*
   @Post("/category")
   async post(@Body() body: any) {   //ToDO : test si tous les param ne sont présent dans body ?
     const category = new Category(body.name,body.description,body.products);    
@@ -68,5 +90,5 @@ export class CategoryController {
     let categoryRepository = connection.getRepository(Category);
     let category = await categoryRepository.delete(id);
     return category;    
-  }
+  }*/
 }

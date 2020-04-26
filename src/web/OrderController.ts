@@ -23,45 +23,54 @@ export class OrderController {
     try{
       const connection = await this.connection;
       let orderRepository = connection.getRepository(Order);
-      return await orderRepository.findOne(id);
+      let order = await orderRepository.findOne(id);
+      if(order)   return order;
+      else return "order not found in db";
     }
     catch(Error){
       console.log(Error.message);
+      return Error.message;
     }
   }
 
   @Post("/orders")
-  async post(@Body() body: any) {    
-    const connection = await this.connection; 
-    let customer = new Customer(body.client.name,body.client.username,body.client.email,
-                                body.client.address,body.client.phoneNumber);   
-    let customerRepository = connection.getRepository(Customer);
-    await customerRepository.save(customer);  //Client crée et sauvergardé
+  async post(@Body() body: any) {   
+    try { 
+      const connection = await this.connection; 
+      let customer = new Customer(body.client.name,body.client.username,body.client.email,
+                                  body.client.address,body.client.phoneNumber);   
+      let customerRepository = connection.getRepository(Customer);
+      await customerRepository.save(customer);  //Client crée et sauvergardé
 
-    let order = new Order();
-    order.customer = customer;
-    order.date = new Date();
-    order.totalAmount = body.totalAmount;
-    
-    let orderRepository = connection.getRepository(Order);  
-    await orderRepository.save(order);  //commande crée et sauvegardé
+      let order = new Order();
+      order.customer = customer;
+      order.date = new Date();
+      order.totalAmount = body.totalAmount;
+      
+      let orderRepository = connection.getRepository(Order);  
+      await orderRepository.save(order);  //commande crée et sauvegardé
 
-    let total = 0;
-    let productRepository = connection.getRepository(Product);
-    let orderItemRepository = connection.getRepository(OrderItem);
+      let total = 0;
+      let productRepository = connection.getRepository(Product);
+      let orderItemRepository = connection.getRepository(OrderItem);
 
-    for(let i=0 ; i<body.products.length ; i++){
-        let orderItem = new OrderItem();            //on crée une commande minifiée
-        orderItem.order = order;                    //association avec la commande en cours
-        let product:Product = await productRepository.findOne(body.products[i].id); //on récupère le produit correspondant
-        orderItem.product = product;                //association avec le produit correspondant 
-        orderItem.price = body.products[i].price;                  //insertion du prix envoyé
-        orderItem.quantity = body.products[i].quantity;            //insertion de la quantité envoyé
-        orderItemRepository.save(orderItem);        //sauvegarde d'une commande minifiée
-        total += body.products[i].quantity * product.currentPrice; 
+      for(let i=0 ; i<body.products.length ; i++){
+          let orderItem = new OrderItem();            //on crée une commande minifiée
+          orderItem.order = order;                    //association avec la commande en cours
+          let product:Product = await productRepository.findOne(body.products[i].id); //on récupère le produit correspondant
+          orderItem.product = product;                //association avec le produit correspondant 
+          orderItem.price = body.products[i].price;                  //insertion du prix envoyé
+          orderItem.quantity = body.products[i].quantity;            //insertion de la quantité envoyé
+          orderItemRepository.save(orderItem);        //sauvegarde d'une commande minifiée
+          total += body.products[i].quantity * product.currentPrice; 
+      }
+      
+      order.totalAmount = total;
+      return order;    
     }
-    
-    order.totalAmount = total;
-    return order;    
+    catch(Error){
+      console.log(Error.message);
+      return Error.message;
+    }
   }
 }
